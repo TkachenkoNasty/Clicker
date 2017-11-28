@@ -1,0 +1,113 @@
+using UnityEngine;
+using System.Collections;
+
+
+public class burgerclicker : MonoBehaviour {
+  
+  public GUISkin blocky;
+  int score;
+  int multiplier;
+  public Texture burger;
+  public Texture shop;
+  public int newbie;
+  public int advanced ;
+  public int experienced;
+  public int BOSS;
+  public AudioClip clicksound;
+  public AudioClip shopsound;
+  public AudioClip closesound;
+  public AudioClip musicsound;
+  bool isshop;
+  bool music;
+  
+  
+  void Awake(){
+    
+    Screen.SetResolution (1280, 720, false);
+    
+    
+    //PlayerPrefs.SetInt ("multi", 1);
+    isshop = false;
+    music = true;
+  }
+  
+  void Update () {
+    
+    if(Input.GetKeyDown (KeyCode.R)){
+      PlayerPrefs.DeleteAll();
+    }
+    
+    if(Input.GetKeyDown (KeyCode.F1)){
+      PlayerPrefs.SetInt ("score", score + 1000);
+    }
+    
+    score = PlayerPrefs.GetInt ("score");
+    multiplier = PlayerPrefs.GetInt ("multi");
+    newbie = PlayerPrefs.GetInt ("newbie");
+    advanced = PlayerPrefs.GetInt ("advanced");
+    experienced = PlayerPrefs.GetInt ("experienced");
+    BOSS = PlayerPrefs.GetInt ("BOSS");
+  }
+  
+  void OnGUI() {
+    
+    GUI.skin = blocky;
+    
+    GUI.Box (new Rect (10, 10, 220, 50), "Click: " + score);
+    GUI.Box (new Rect (225, 10, 215, 50),"xClick: +" + multiplier);
+    
+    if (GUI.Button (new Rect (Screen.width / 2 + 195, 10, 50, 50), shop)) {
+      isshop = true;
+      audio.PlayOneShot (closesound);
+    }
+    
+    
+    
+    if (GUI.Button (new Rect (Screen.width / 2 - 150, Screen.height / 2, 300, 300), burger)) {
+      PlayerPrefs.SetInt ("score", score + 1 +multiplier);
+      audio.PlayOneShot (clicksound);
+    }
+    
+    if (isshop) {
+      
+      GUI.Box (new Rect (10, Screen.height-300, 220, 50), "Click: " + score);
+      GUI.Box (new Rect (225, Screen.height-300, 215, 50),"xClick: +" + multiplier);
+      GUI.Box (new Rect (0, 0, Screen.width, Screen.height), "Shop");
+      GUI.Label (new Rect(10,30, 400, 30), "Click: " + score + " xClick: " + multiplier);
+      if (GUI.Button (new Rect (10, 55, 400, 100), "Newbie [-100] " + "[" + newbie + "]") && score >= 100) {
+        PlayerPrefs.SetInt ("multi", multiplier + 1);
+        PlayerPrefs.SetInt ("score", score -100);
+        PlayerPrefs.SetInt ("newbie", newbie + 1);
+        audio.PlayOneShot (shopsound);
+      }
+      if (GUI.Button (new Rect (10, 165, 400, 100), "Advanced [-300] " + "[" + advanced + "]") && score >= 300) {
+        PlayerPrefs.SetInt ("multi", multiplier + 5);
+        PlayerPrefs.SetInt ("score", score -300);
+        PlayerPrefs.SetInt ("advanced", advanced + 1);
+        audio.PlayOneShot (shopsound);
+        
+      }
+      if (GUI.Button (new Rect (10, 275, 400, 100), "Experienced [-1,000] " + "[" + experienced + "]") && score >= 1000) {
+        PlayerPrefs.SetInt ("multi", multiplier + 20);
+        PlayerPrefs.SetInt ("score", score -1000);
+        PlayerPrefs.SetInt ("experienced", experienced + 1);
+        audio.PlayOneShot (shopsound);
+        
+      }
+      if (GUI.Button (new Rect (10, 385, 400, 100), "BOSS [-10,000] " + "[" + BOSS + "]") && score >= 10000) {
+        PlayerPrefs.SetInt ("multi", multiplier + 100);
+        PlayerPrefs.SetInt ("score", score -10000);
+        PlayerPrefs.SetInt ("BOSS", BOSS + 1);
+        audio.PlayOneShot (shopsound);
+        
+      }
+      if (GUI.Button (new Rect (10, 495, 300, 100), "Close")) {
+        Application.LoadLevel (0);
+
+      }
+    }
+  }
+  
+  
+  
+}
